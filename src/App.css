@@ -14,25 +14,55 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  background-color: #ffffff;
+  min-height: 200px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  /*justify-content: center;*/
   font-size: calc(10px + 2vmin);
-  color: white;
 }
 
 .App-link {
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.choiceButton {
+  background-color: #ffffff;
+  border: 1px solid #000000;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.choiceButton:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.inputChoice {
+  background-color: #ffffff;
+  padding: 10px;
+  margin: 10px;
+  font-size: 20px;
+}
+
+.inputfield {
+  background-color: #ffffff;
+  padding: 10px;
+  margin: 10px;
+  font-size: 20px;
+  width: 500px;
+}
+
+label {
+  font-size: 20px;
+  margin: 10px;
+}
+
+footer {
+  background-color: aliceblue;
+  justify-content: bottom;
 }
