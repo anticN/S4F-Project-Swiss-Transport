@@ -55,11 +55,36 @@
   margin: 10px;
   font-size: 20px;
   width: 500px;
+  margin-right: 35px;
+}
+
+.datetimefield {
+  background-color: #ffffff;
+  padding: 10px;
+  margin: 10px;
+  font-size: 20px;
+  width: 120px;
+  margin-right: 25px;
 }
 
 label {
   font-size: 20px;
   margin: 10px;
+}
+
+.submitButton {
+  background-color: #ff7070;
+  border: 1px solid #000000;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.submitButton:hover {
+  background-color: #387f38;
+  color: #ffffff;
 }
 
 footer {

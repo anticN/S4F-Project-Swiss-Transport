@@ -13,8 +13,15 @@ function App() {
         <button className='choiceButton'>Verbindungen</button>
       </div>
       <div className='inputChoice'>
-        <label for="location">Ort</label>
-        <input type='text' name='location' className='inputfield' id='location' placeholder='Name des Ortes um die Stationen anzuzeigen'></input>
+        <form>
+          <label for="location">Ort</label>
+          <input type='text' name='location' className='inputfield' id='location' placeholder='Name des Ortes um die Stationen anzuzeigen'></input>
+          <label for="date">Datum</label>
+          <input type='text' name='date' className="datetimefield" id='date' placeholder='yyyy-mm-dd' defaultValue={new Date().toISOString().slice(0,10)}></input>
+          <label for="time">Zeit</label>
+          <input type='text' name='time' className="datetimefield" id='time' placeholder='hh:mm' defaultValue={new Date().toISOString().slice(11,16)}></input>
+          <button className='submitButton' type='submit'>Suchen</button>
+        </form>
       </div>
     </div>
   );
