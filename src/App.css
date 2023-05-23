@@ -37,7 +37,7 @@
   cursor: pointer;
 }
 
-.activeChoiceButton {
+.active {
   background-color: #000000;
   border: 1px solid #000000;
   color: #ffffff;
@@ -101,4 +101,7 @@ label {
 footer {
   background-color: aliceblue;
   justify-content: bottom;
+}
+.forms label {
+  color: skyblue;
 }
