@@ -27,6 +27,16 @@ function App() {
     }
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // hier kommt der API request hin
+    const formData = new FormData(e.target);
+    const station = formData.get('station');
+    console.log(station);
+  
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -38,7 +48,7 @@ function App() {
           <button onClick={() => handleClick("button2")} className={activeButton === "button2" ? "active" : "choiceButton"}>Verbindungen</button>
         </div>
         <div className='inputChoice'>
-          <form>
+          <form id='form' onSubmit={handleSubmit}>
             <div className="content" dangerouslySetInnerHTML={{ __html: content}} />
             <label for="date">Datum</label>
             <input type='text' name='date' className="datetimefield" id='date' placeholder='yyyy-mm-dd' defaultValue={new Date().toISOString().slice(0,10)}></input>
