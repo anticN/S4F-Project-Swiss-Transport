@@ -3,7 +3,7 @@ import {useState} from 'react';
 import './App.css';
 
 function App() {
-  const [isActive, setIsActive] = useState(false);
+  const [isActive, setIsActive] = useState(true);
 
   const handleClick = event => {
     setIsActive(current => !current);
@@ -17,7 +17,7 @@ function App() {
       <div className='main'>
         <div className='Choice'>
           <button className={isActive ? "activeChoiceButton" : "choiceButton"} onClick={handleClick}>Abfahrten</button>
-          <button className={isActive ? "choiceButton" : "activeChoiceButton"} onclick={handleClick}>Verbindungen</button>
+          <button className={isActive ? "choiceButton" : "activeChoiceButton"} onClick={handleClick}>Verbindungen</button>
         </div>
         <div className='inputChoice'>
           <form>
