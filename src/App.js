@@ -9,6 +9,8 @@ function App() {
         <input type='text' name='station' class='inputfield' id='station' placeholder='Name der Station um die Abfahrten anzuzeigen'></input>`
         );
 
+  const [respContent, setRespContent] = useState("")
+
   const handleClick = (button) => {
     setActiveButton(button);
 
@@ -34,7 +36,18 @@ function App() {
     const formData = new FormData(e.target);
     const station = formData.get('station');
     console.log(station);
-  
+    if(activeButton === 'button1'){
+    fetch(`http://transport.opendata.ch/v1/stationboard?station=${station}&datetime=${formData.get("date")} ${formData.get("time")}&limit=10`)
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.log(error));
+
+    }else if(activeButton === 'button2'){
+    fetch(`http://transport.opendata.ch/v1/connections?from=${formData.get("depart")}&to=${formData.get("arrive")}&date=${formData.get("date")}&time=${formData.get("time")}&limit=10`)
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.log(error));
+    }
   };
 
   return (
