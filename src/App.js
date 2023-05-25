@@ -1,4 +1,3 @@
-//import logo from './logo.svg';
 import {useState} from 'react';
 import './App.css';
 
@@ -6,10 +5,20 @@ function App() {
   const [activeButton, setActiveButton] = useState("button1");
   const [content, setContent] = useState(`
         <label for="station">Station</label>
-        <input type='text' name='station' class='inputfield' id='station' placeholder='Name der Station um die Abfahrten anzuzeigen'></input>`
+        <input type='text' name='station' class='inputfield' id='station' required placeholder='Name der Station um die Abfahrten anzuzeigen'></input>`
         );
 
   const [respContent, setRespContent] = useState("")
+
+  function handleStation(res) {
+    setRespContent(`
+    <h3 class="nextDepart">Die nächsten Abfahrten von ${res.station.name}:</h3>
+    <div className='respContent'>
+      <p>Abfahrt: ${res.stationboard[0].passList[0].departure}</p>
+    </div>
+    `)
+  }
+
 
   const handleClick = (button) => {
     setActiveButton(button);
@@ -17,14 +26,14 @@ function App() {
     if (button === 'button1') {
       setContent(`
         <label for="station">Station</label>
-        <input type='text' name='station' class='inputfield' id='station' placeholder='Name der Station um die Abfahrten anzuzeigen'></input>
+        <input type='text' name='station' class='inputfield' id='station' required placeholder='Name der Station um die Abfahrten anzuzeigen'></input>
         `);
     }else if (button === 'button2') {
       setContent(`
       <label for="depart">Abfahrt</label>
-        <input type='text' name='depart' class='inputfield2' id='depart' placeholder='Name des Abfahrtorts'></input>
+        <input type='text' name='depart' class='inputfield2' id='depart' required placeholder='Name des Abfahrtorts'></input>
       <label for="arrive">Ankunft</label>
-        <input type='text' name='arrive' class='inputfield2' id='arrive' placeholder='Name des Ankunftsorts'></input>
+        <input type='text' name='arrive' class='inputfield2' id='arrive' required placeholder='Name des Ankunftsorts'></input>
       `)
     }
   };
@@ -39,7 +48,8 @@ function App() {
     if(activeButton === 'button1'){
     fetch(`http://transport.opendata.ch/v1/stationboard?station=${station}&datetime=${formData.get("date")} ${formData.get("time")}&limit=10`)
       .then(response => response.json())
-      .then(data => console.log(data))
+      .then(data => handleStation(data))
+      //.then(data => handleStation(data))
       .catch(error => console.log(error));
 
     }else if(activeButton === 'button2'){
@@ -66,9 +76,12 @@ function App() {
             <label for="date">Datum</label>
             <input type='text' name='date' className="datetimefield" id='date' placeholder='yyyy-mm-dd' defaultValue={new Date().toISOString().slice(0,10)}></input>
             <label for="time">Zeit</label>
-            <input type='text' name='time' className="datetimefield" id='time' placeholder='hh:mm' defaultValue={new Date().toISOString().slice(11,16)}></input>
+            <input type='text' name='time' className="datetimefield" id='time' placeholder='hh:mm' defaultValue={new Date().toLocaleString().slice(11,16)}></input>
             <button className='submitButton' type='submit'>Suchen</button>
           </form>
+          </div>
+          <div className='response'>
+            <div className='respContent' dangerouslySetInnerHTML={{ __html: respContent}} />
           </div>
         </div>
       </div>

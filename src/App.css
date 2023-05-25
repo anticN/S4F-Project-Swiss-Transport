@@ -107,6 +107,11 @@ label {
   color: #ffffff;
 }
 
+.nextDepart {
+  padding-top: 30px;
+  margin-top: 30px;
+}
+
 footer {
   background-color: aliceblue;
   justify-content: bottom;
