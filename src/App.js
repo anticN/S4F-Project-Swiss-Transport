@@ -10,11 +10,14 @@ function App() {
 
   const [respContent, setRespContent] = useState("")
 
-  function handleStation(res) {
+  function handleStation(res, formData) {
     setRespContent(`
-    <h3 class="nextDepart">Die nächsten Abfahrten von ${res.station.name}:</h3>
-    <div className='respContent'>
-      <p>Abfahrt: ${res.stationboard[0].passList[0].departure}</p>
+    <h3 class="nextDepart">Abfahrten von ${res.station.name} am ${formData.get("date")} ab ${formData.get("time")}:</h3>
+    <div class='respContent'>
+      <div class="responseTable">
+        <p>${res.stationboard[0].category}${res.stationboard[0].number} nach ${res.stationboard[0].to}</p>
+        <p>Abfahrt: ${res.stationboard[0].passList[0].departure}</p>
+      </div>
     </div>
     `)
   }
@@ -48,7 +51,7 @@ function App() {
     if(activeButton === 'button1'){
     fetch(`http://transport.opendata.ch/v1/stationboard?station=${station}&datetime=${formData.get("date")} ${formData.get("time")}&limit=10`)
       .then(response => response.json())
-      .then(data => handleStation(data))
+      .then(data => handleStation(data, formData))
       //.then(data => handleStation(data))
       .catch(error => console.log(error));
 
