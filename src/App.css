@@ -112,10 +112,20 @@ label {
   margin-top: 30px;
 }
 
+.responseTable {
+  border: 1px solid #000000;
+  margin-left: 20px;
+}
+
+.respContent {
+  align-items: center;
+}
+
 footer {
   background-color: aliceblue;
   justify-content: bottom;
 }
+
 .forms label {
   color: skyblue;
 }
