@@ -12,8 +12,8 @@ function App() {
 
   const [respContent, setRespContent] = useState("")
 
-  function checkCategory(res) {
-    switch (res.stationboard[0].category) {
+  function checkCategory(res, index) {
+    switch (res.stationboard[index].category) {
       case "T":
         return `<img src="/icons/tram_r.png" alt="Tram" />`
         break;
@@ -23,17 +23,39 @@ function App() {
       case "S":
         return `<img src="/icons/zug_r.png" alt="S-Bahn" />`
         break;
+      case "BAT":
+        return `<img src="/icons/Schiff_r.png" alt="Boot" />`
+        break;
+      case "FUN":
+        return `<img src="/icons/Standseilbahn_r.png" alt="Standseilbahn" />`
+        break;
+      case "M":
+        return `<img src="/icons/Metro_r_de.png" alt="Metro" />`
+        break;
+      case "PB":
+        return `<img src="/icons/Luftseilbahn_r.png" alt="Luftseilbahn" />`
+        break;
+        // todo add IC, IR, RE, EC, TGV etc.
+
     }
   }
 
   function handleStation(res, formData) {
+    console.log(res);
+    let stations = []
+    for(let i = 0; i < res.stationboard.length; i++) {
+      let dateTime = res.stationboard[i].passList[0].departure.split('T')
+      let time = dateTime[1].split('+')
+      stations.push(`
+        <div class="responseTable">
+          <p>${checkCategory(res, i)} ${res.stationboard[i].category}${res.stationboard[i].number} nach ${res.stationboard[i].to}</p>
+          <p>Abfahrt am ${dateTime[0]} um ${time[0]}</p>
+      </div>`)
+    }
     setRespContent(`
-    <h3 class="nextDepart">Abfahrten von ${res.station.name} am ${formData.get("date")} ab ${formData.get("time")}:</h3>
+    <h2 class="nextDepart">Abfahrten von ${res.station.name} am ${formData.get("date")} ab ${formData.get("time")}</h2>
     <div class='respContent'>
-      <div class="responseTable">
-        <p>${checkCategory(res)} ${res.stationboard[0].category}${res.stationboard[0].number} nach ${res.stationboard[0].to}</p>
-        <p>Abfahrt: ${res.stationboard[0].passList[0].departure}</p>
-      </div>
+      ${stations.join('')}
     </div>
     `)
   }

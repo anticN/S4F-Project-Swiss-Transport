@@ -115,6 +115,13 @@ label {
 .responseTable {
   border: 1px solid #000000;
   margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+.responseTable:hover {
+  background-color: #5d5a5a;
+  color: #ffffff;
 }
 
 .respContent {
@@ -128,4 +135,8 @@ footer {
 
 .forms label {
   color: skyblue;
+}
+
+p {
+  font-size: large;
 }
