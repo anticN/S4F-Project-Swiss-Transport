@@ -1,6 +1,4 @@
 import { useState } from 'react';
-//import Zug from '/icons/Zug_r.png';
-import Image from "react";
 import './App.css';
 
 function App() {
@@ -16,25 +14,20 @@ function App() {
     switch (res.stationboard[index].category) {
       case "T":
         return `<img src="/icons/tram_r.png" alt="Tram" />`
-        break;
       case "B":
         return `<img src='/icons/Bus_r.png' alt="Bus" />`
-        break;
       case "S":
         return `<img src="/icons/zug_r.png" alt="S-Bahn" />`
-        break;
       case "BAT":
         return `<img src="/icons/Schiff_r.png" alt="Boot" />`
-        break;
       case "FUN":
         return `<img src="/icons/Standseilbahn_r.png" alt="Standseilbahn" />`
-        break;
       case "M":
         return `<img src="/icons/Metro_r_de.png" alt="Metro" />`
-        break;
       case "PB":
         return `<img src="/icons/Luftseilbahn_r.png" alt="Luftseilbahn" />`
-        break;
+      default:
+        return `default`
         // todo add IC, IR, RE, EC, TGV etc.
 
     }
