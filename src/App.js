@@ -48,8 +48,8 @@ function App() {
       let time = dateTime[1].split('+')
       stations.push(`
         <div class="responseTable">
-          <p>${checkCategory(res, i)} ${res.stationboard[i].category}${res.stationboard[i].number} nach ${res.stationboard[i].to}</p>
-          <p>Abfahrt am ${dateTime[0]} um ${time[0]}</p>
+          <p>${checkCategory(res, i)} <span class="important">${res.stationboard[i].category}${res.stationboard[i].number}</span> nach ${res.stationboard[i].to}</p>
+          <p>Abfahrt am <span class="important">${dateTime[0]}</span> um <span class="important">${time[0]}</span></p>
       </div>`)
     }
     setRespContent(`
