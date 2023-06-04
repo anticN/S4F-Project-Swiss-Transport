@@ -8,7 +8,13 @@ function App() {
         <input type='text' name='station' class='inputfield' id='station' required placeholder='Name der Station um die Abfahrten anzuzeigen'></input>`
   );
 
-  const [respContent, setRespContent] = useState("")
+  const [respContent, setRespContent] = useState(`<h2 class="nextDepart">Geben Sie eine Station ein um die Abfahrten anzuzeigen</h2>`);
+
+  let results = document.getElementsByClassName('responseTable');
+
+  /*results.addEventListener('click', function (e) {
+    console.log(e);
+  });*/
 
   function checkCategory(res, index) {
     switch (res.stationboard[index].category) {
@@ -34,7 +40,10 @@ function App() {
   }
 
   function handleStation(res, formData) {
-    console.log(res);
+    if (res.station.name === null) {
+      setRespContent(`<h2 class="nextDepart">Keine Station gefunden</h2>`)
+    }else{
+      console.log(res);
     let stations = []
     for(let i = 0; i < res.stationboard.length; i++) {
       let dateTime = res.stationboard[i].passList[0].departure.split('T')
@@ -51,6 +60,8 @@ function App() {
       ${stations.join('')}
     </div>
     `)
+    }
+    
   }
 
 
@@ -74,6 +85,7 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setRespContent(`<h2 class="nextDepart">Lade...</h2>`)
 
     // hier kommt der API request hin
     const formData = new FormData(e.target);
@@ -84,7 +96,7 @@ function App() {
         .then(response => response.json())
         .then(data => handleStation(data, formData))
         //.then(data => handleStation(data))
-        .catch(error => console.log(error));
+        .catch(error => setRespContent(`<h2 class="nextDepart" style="color: red;">Es ist ein Fehler aufgetreten</h2>`));
 
     } else if (activeButton === 'button2') {
       fetch(`http://transport.opendata.ch/v1/connections?from=${formData.get("depart")}&to=${formData.get("arrive")}&date=${formData.get("date")}&time=${formData.get("time")}&limit=10`)
