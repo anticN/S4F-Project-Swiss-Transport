@@ -8,13 +8,9 @@ function App() {
         <input type='text' name='station' class='inputfield' id='station' required placeholder='Name der Station um die Abfahrten anzuzeigen'></input>`
   );
 
-  const [respContent, setRespContent] = useState(`<h2 class="nextDepart">Geben Sie eine Station ein um die Abfahrten anzuzeigen</h2>`);
+  const [respContent, setRespContent] = useState(`<h2 class="nextDepart">Geben Sie eine Station ein um die Abfahrten anzuzeigen</h2>
+  <h4>Es kann sein, dass der erste Request ein wenig länger dauert.</h4>`);
 
-  let results = document.getElementsByClassName('responseTable');
-
-  /*results.addEventListener('click', function (e) {
-    console.log(e);
-  });*/
 
   function checkCategory(res, index) {
     switch (res.stationboard[index].category) {
@@ -39,6 +35,22 @@ function App() {
     }
   }
 
+  function checkGleisKante(res, index) {
+    if(res.stationboard[index].passList[0].platform !== null) {
+      return `, auf Gleis/Kante <span class="important">${res.stationboard[index].passList[0].platform}</span>`
+    }else{
+      return ``
+    }
+  }
+
+  function checkDelay(res, index) {
+    if(res.stationboard[index].passList[0].delay !== 0) {
+      return `<span style="color: red;"><b> +${res.stationboard[index].passList[0].delay}</b></span>`
+    }else{
+      return ``
+    }
+  }
+
   function handleStation(res, formData) {
     if (res.station.name === null) {
       setRespContent(`<h2 class="nextDepart">Keine Station gefunden</h2>`)
@@ -51,7 +63,7 @@ function App() {
       stations.push(`
         <div class="responseTable">
           <p>${checkCategory(res, i)} <span class="important">${res.stationboard[i].category}${res.stationboard[i].number}</span> nach ${res.stationboard[i].to}</p>
-          <p>Abfahrt am <span class="important">${dateTime[0]}</span> um <span class="important">${time[0]}</span></p>
+          <p>Abfahrt am <span class="important">${dateTime[0]}</span> um <span class="important">${time[0]}</span>${checkDelay(res, i)}${checkGleisKante(res, i)}</p>
       </div>`)
     }
     setRespContent(`
@@ -61,7 +73,10 @@ function App() {
     </div>
     `)
     }
-    
+  }
+
+  function handleConnection(res, formData) {
+    console.log(res);
   }
 
 
@@ -101,7 +116,7 @@ function App() {
     } else if (activeButton === 'button2') {
       fetch(`http://transport.opendata.ch/v1/connections?from=${formData.get("depart")}&to=${formData.get("arrive")}&date=${formData.get("date")}&time=${formData.get("time")}&limit=10`)
         .then(response => response.json())
-        .then(data => console.log(data))
+        .then(data => handleConnection(data, formData))
         .catch(error => console.log(error));
     }
   };
