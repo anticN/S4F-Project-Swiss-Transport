@@ -13,7 +13,9 @@ function App() {
 
 
   function checkCategory(res, index) {
-    switch (res.stationboard[index].category) {
+    // überprüft die Kategorie des Verkehrsmittels und gibt das passende Icon zurück
+    if (res.stationboard){
+      switch (res.stationboard[index].category) {
       case "T":
         return `<img src="/icons/tram_r.png" alt="Tram" />`
       case "B":
@@ -31,32 +33,73 @@ function App() {
       default:
         return `default`
         // todo add IC, IR, RE, EC, TGV etc.
-
+      }
+    }else if (res.connections) {
+      switch (res.connections[index].sections[0].journey.category) {
+        case "T":
+          return `<img src="/icons/tram_r.png" alt="Tram" />`
+        case "B":
+          return `<img src='/icons/Bus_r.png' alt="Bus" />`
+        case "S":
+          return `<img src="/icons/zug_r.png" alt="S-Bahn" />`
+        case "BAT":
+          return `<img src="/icons/Schiff_r.png" alt="Boot" />`
+        case "FUN":
+          return `<img src="/icons/Standseilbahn_r.png" alt="Standseilbahn" />`
+        case "M":
+          return `<img src="/icons/Metro_r_de.png" alt="Metro" />`
+        case "PB":
+          return `<img src="/icons/Luftseilbahn_r.png" alt="Luftseilbahn" />`
+        default:
+          return `default`
+          // todo add IC, IR, RE, EC, TGV etc.
+        }
     }
   }
 
   function checkGleisKante(res, index) {
-    if(res.stationboard[index].passList[0].platform !== null) {
-      return `, auf Gleis/Kante <span class="important">${res.stationboard[index].passList[0].platform}</span>`
-    }else{
-      return ``
+    // Gibt das Gleis/Kante zurück, wenn es vorhanden ist
+    if (res.stationboard){
+      if(res.stationboard[index].passList[0].platform !== null) {
+        return `, auf Gleis/Kante <span class="important">${res.stationboard[index].passList[0].platform}</span>`
+      }else{
+        return ``
+      }
+    }else if(res.connections) {
+      if(res.connections[index].from.platform !== null) {
+        return `, auf Gleis/Kante <span class="important">${res.connections[index].from.platform}</span>`
+      }else{
+        return ``
+      }
     }
   }
 
   function checkDelay(res, index) {
-    if(res.stationboard[index].passList[0].delay !== 0) {
-      return `<span style="color: red;"><b> +${res.stationboard[index].passList[0].delay}</b></span>`
-    }else{
-      return ``
+    // überprüft ob es Verspätungen bei einer Abfahrt gibt
+    if(res.stationboard){
+      if(res.stationboard[index].passList[0].delay !== 0) {
+        return `<span style="color: red;"><b> +${res.stationboard[index].passList[0].delay}</b></span>`
+      }else{
+        return ``
+      }
+
+    }else if (res.connections) {
+      if(res.connections[index].from.delay !== 0) {
+        return `<span style="color: red;"><b> +${res.connections[index].from.delay}</b></span>`
+      }else{
+        return ``
+      }
     }
   }
 
   function handleStation(res, formData) {
+    // überprüft ob eine Station gefunden wurde
     if (res.station.name === null) {
       setRespContent(`<h2 class="nextDepart">Keine Station gefunden</h2>`)
     }else{
       console.log(res);
     let stations = []
+    // erstellt die HTML Elemente für die Abfahrten
     for(let i = 0; i < res.stationboard.length; i++) {
       let dateTime = res.stationboard[i].passList[0].departure.split('T')
       let time = dateTime[1].split('+')
@@ -75,12 +118,34 @@ function App() {
     }
   }
 
+  
   function handleConnection(res, formData) {
-    console.log(res);
+    if (res.from.name === null || res.to.name === null) {
+      setRespContent(`<h2 class="nextDepart">Keine Verbindungen gefunden</h2>`)
+    }else{
+      console.log(res);
+    let connections = []
+    for(let i = 0; i < res.connections.length; i++) {
+      let dateTime = res.connections[i].from.departure.split('T')
+      let time = dateTime[1].split('+')
+      connections.push(`
+        <div class="responseTable">
+          <p>${checkCategory(res, i)} <span class="important">${res.connections[i].sections[0].journey.category}${res.connections[i].sections[0].journey.number}</span> nach ${res.connections[i].sections[0].journey.to}</p>
+          <p>Abfahrt am <span class="important">${dateTime[0]}</span> um <span class="important">${time[0]}</span>${checkDelay(res, i)}${checkGleisKante(res, i)}</p>
+      </div>`)
+    }
+    setRespContent(`
+    <h2 class="nextDepart">Verbindungen von ${res.from.name} nach ${res.to.name} am ${formData.get("date")} ab ${formData.get("time")}</h2>
+    <div class='respContent'>
+      ${connections.join('')}
+    </div>
+    `)
+    }
   }
 
 
   const handleClick = (button) => {
+    // ändert den aktiven Button und den Inhalt des Formulars
     setActiveButton(button);
 
     if (button === 'button1') {
@@ -99,8 +164,15 @@ function App() {
   };
 
   const handleSubmit = (e) => {
+    // verhindert das Neuladen der Seite und ruft die Funktionen für die API Requests auf
     e.preventDefault();
-    setRespContent(`<h2 class="nextDepart">Lade...</h2>`)
+    setRespContent(`<div class="loading-wave">
+  <div class="loading-bar"></div>
+  <div class="loading-bar"></div>
+  <div class="loading-bar"></div>
+  <div class="loading-bar"></div>
+</div>
+`)
 
     // hier kommt der API request hin
     const formData = new FormData(e.target);
