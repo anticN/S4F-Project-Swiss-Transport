@@ -77,10 +77,10 @@ function App() {
   function checkDelay(res, index) {
     // überprüft ob es Verspätungen bei einer Abfahrt gibt
     if(res.stationboard){
-      if(res.stationboard[index].passList[0].delay !== 0) {
-        return `<span style="color: red;"><b> +${res.stationboard[index].passList[0].delay}</b></span>`
-      }else{
+      if(res.stationboard[index].passList[0].delay === 0 || res.stationboard[index].passList[0].delay === null) {
         return ``
+      }else{
+        return `<span style="color: red;"><b> +${res.stationboard[index].passList[0].delay}</b></span>`
       }
 
     }else if (res.connections) {
@@ -104,7 +104,7 @@ function App() {
       let dateTime = res.stationboard[i].passList[0].departure.split('T')
       let time = dateTime[1].split('+')
       stations.push(`
-        <div class="responseTable">
+        <div class="responseTable" onclick="(${handleDivClick})()">
           <p>${checkCategory(res, i)} <span class="important">${res.stationboard[i].category}${res.stationboard[i].number}</span> nach ${res.stationboard[i].to}</p>
           <p>Abfahrt am <span class="important">${dateTime[0]}</span> um <span class="important">${time[0]}</span>${checkDelay(res, i)}${checkGleisKante(res, i)}</p>
       </div>`)
@@ -124,25 +124,28 @@ function App() {
       setRespContent(`<h2 class="nextDepart">Keine Verbindungen gefunden</h2>`)
     }else{
       console.log(res);
-    let connections = []
-    for(let i = 0; i < res.connections.length; i++) {
-      let dateTime = res.connections[i].from.departure.split('T')
-      let time = dateTime[1].split('+')
-      connections.push(`
-        <div class="responseTable">
-          <p>${checkCategory(res, i)} <span class="important">${res.connections[i].sections[0].journey.category}${res.connections[i].sections[0].journey.number}</span> nach ${res.connections[i].sections[0].journey.to}</p>
-          <p>Abfahrt am <span class="important">${dateTime[0]}</span> um <span class="important">${time[0]}</span>${checkDelay(res, i)}${checkGleisKante(res, i)}</p>
-      </div>`)
-    }
-    setRespContent(`
-    <h2 class="nextDepart">Verbindungen von ${res.from.name} nach ${res.to.name} am ${formData.get("date")} ab ${formData.get("time")}</h2>
-    <div class='respContent'>
-      ${connections.join('')}
-    </div>
-    `)
+      let connections = []
+      for(let i = 0; i < res.connections.length; i++) {
+        let dateTime = res.connections[i].from.departure.split('T')
+        let time = dateTime[1].split('+')
+        connections.push(`
+          <div class="responseTable" onclick=${handleDivClick()}>
+            <p>${checkCategory(res, i)} <span class="important">${res.connections[i].sections[0].journey.category}${res.connections[i].sections[0].journey.number}</span> nach ${res.connections[i].sections[0].journey.to}</p>
+            <p>Abfahrt am <span class="important">${dateTime[0]}</span> um <span class="important">${time[0]}</span>${checkDelay(res, i)}${checkGleisKante(res, i)}</p>
+        </div>`)
+      }
+      setRespContent(`
+      <h2 class="nextDepart">Verbindungen von ${res.from.name} nach ${res.to.name} am ${formData.get("date")} ab ${formData.get("time")}</h2>
+      <div class='respContent'>
+        ${connections.join('')}
+      </div>
+      `)
     }
   }
 
+  const handleDivClick = () => {
+    console.log('div clicked');
+  }
 
   const handleClick = (button) => {
     // ändert den aktiven Button und den Inhalt des Formulars
@@ -166,6 +169,7 @@ function App() {
   const handleSubmit = (e) => {
     // verhindert das Neuladen der Seite und ruft die Funktionen für die API Requests auf
     e.preventDefault();
+    // setzt den Ladebildschirm
     setRespContent(`<div class="loading-wave">
   <div class="loading-bar"></div>
   <div class="loading-bar"></div>
@@ -177,19 +181,19 @@ function App() {
     // hier kommt der API request hin
     const formData = new FormData(e.target);
     const station = formData.get('station');
-    console.log(station);
+    
     if (activeButton === 'button1') {
+      console.log(station);
       fetch(`http://transport.opendata.ch/v1/stationboard?station=${station}&datetime=${formData.get("date")} ${formData.get("time")}&limit=10`)
         .then(response => response.json())
         .then(data => handleStation(data, formData))
-        //.then(data => handleStation(data))
         .catch(error => setRespContent(`<h2 class="nextDepart" style="color: red;">Es ist ein Fehler aufgetreten</h2>`));
 
     } else if (activeButton === 'button2') {
       fetch(`http://transport.opendata.ch/v1/connections?from=${formData.get("depart")}&to=${formData.get("arrive")}&date=${formData.get("date")}&time=${formData.get("time")}&limit=10`)
         .then(response => response.json())
         .then(data => handleConnection(data, formData))
-        .catch(error => console.log(error));
+        .catch(error => setRespContent(`<h2 class="nextDepart" style="color: red;">Es ist ein Fehler aufgetreten</h2>`));
     }
   };
 
@@ -209,8 +213,8 @@ function App() {
             <label for="date">Datum</label>
             <input type='text' name='date' className="datetimefield" id='date' placeholder='yyyy-mm-dd' defaultValue={new Date().toISOString().slice(0, 10)}></input>
             <label for="time">Zeit</label>
-            <input type='text' name='time' className="datetimefield" id='time' placeholder='hh:mm' defaultValue={new Date().toLocaleString().slice(10, 15)}></input>
-            <button className='submitButton' type='submit'>Suchen</button>
+            <input type='text' name='time' className="datetimefield" id='time' placeholder='hh:mm' defaultValue={new Date().toLocaleString().slice(11, 16)}></input>
+            <button className='submitButton' type='submit' id='btn'>Suchen</button>
           </form>
         </div>
         <div className='response'>
