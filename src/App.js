@@ -11,11 +11,10 @@ function App() {
   const [respContent, setRespContent] = useState(`<h2 class="nextDepart">Geben Sie eine Station ein um die Abfahrten anzuzeigen</h2>
   <h4>Es kann sein, dass der erste Request ein wenig länger dauert.</h4>`);
 
+  const [details, setDetails] = useState(false);
 
-  function checkCategory(res, index) {
-    // überprüft die Kategorie des Verkehrsmittels und gibt das passende Icon zurück
-    if (res.stationboard){
-      switch (res.stationboard[index].category) {
+  function returnCategory(category) {
+    switch (category) {
       case "T":
         return `<img src="/icons/tram_r.png" alt="Tram" />`
       case "B":
@@ -30,32 +29,31 @@ function App() {
         return `<img src="/icons/Metro_r_de.png" alt="Metro" />`
       case "PB":
         return `<img src="/icons/Luftseilbahn_r.png" alt="Luftseilbahn" />`
+      case "ICE":
+        return `<img src="/icons/ice.svg" alt="ICE" />`
+      case "IC":
+        return `<img src="/icons/ic.svg" alt="IC" />`
+      case "IR":
+        return `<img src="/icons/ir.svg" alt="IR" />`
+      case "RE":
+        return `<img src="/icons/re.svg" alt="RE" />`
+      case "TGV":
+        return `<img src="/icons/tgv.svg" alt="TGV" />`
       default:
         return `default`
-        // todo add IC, IR, RE, EC, TGV etc.
+        // todo EC etc.
       }
+  }
+
+  function checkCategory(res, index) {
+    // überprüft die Kategorie des Verkehrsmittels und gibt das passende Icon zurück
+    if (res.stationboard){
+      return returnCategory(res.stationboard[index].category)
     }else if (res.connections) {
-      switch (res.connections[index].sections[0].journey.category) {
-        case "T":
-          return `<img src="/icons/tram_r.png" alt="Tram" />`
-        case "B":
-          return `<img src='/icons/Bus_r.png' alt="Bus" />`
-        case "S":
-          return `<img src="/icons/zug_r.png" alt="S-Bahn" />`
-        case "BAT":
-          return `<img src="/icons/Schiff_r.png" alt="Boot" />`
-        case "FUN":
-          return `<img src="/icons/Standseilbahn_r.png" alt="Standseilbahn" />`
-        case "M":
-          return `<img src="/icons/Metro_r_de.png" alt="Metro" />`
-        case "PB":
-          return `<img src="/icons/Luftseilbahn_r.png" alt="Luftseilbahn" />`
-        default:
-          return `default`
-          // todo add IC, IR, RE, EC, TGV etc.
-        }
+      return returnCategory(res.connections[index].sections[0].journey.category)
     }
   }
+
 
   function checkGleisKante(res, index) {
     // Gibt das Gleis/Kante zurück, wenn es vorhanden ist
@@ -84,10 +82,10 @@ function App() {
       }
 
     }else if (res.connections) {
-      if(res.connections[index].from.delay !== 0) {
-        return `<span style="color: red;"><b> +${res.connections[index].from.delay}</b></span>`
-      }else{
+      if(res.connections[index].from.delay === 0 || res.connections[index].from.delay === null) {
         return ``
+      }else{
+        return `<span style="color: red;"><b> +${res.connections[index].from.delay}</b></span>`
       }
     }
   }
@@ -104,7 +102,7 @@ function App() {
       let dateTime = res.stationboard[i].passList[0].departure.split('T')
       let time = dateTime[1].split('+')
       stations.push(`
-        <div class="responseTable" onclick="(${handleDivClick})()">
+        <div class="responseTable" id="resp${i}" onclick="(${handleDivClick})()">
           <p>${checkCategory(res, i)} <span class="important">${res.stationboard[i].category}${res.stationboard[i].number}</span> nach ${res.stationboard[i].to}</p>
           <p>Abfahrt am <span class="important">${dateTime[0]}</span> um <span class="important">${time[0]}</span>${checkDelay(res, i)}${checkGleisKante(res, i)}</p>
       </div>`)
@@ -129,7 +127,7 @@ function App() {
         let dateTime = res.connections[i].from.departure.split('T')
         let time = dateTime[1].split('+')
         connections.push(`
-          <div class="responseTable" onclick=${handleDivClick()}>
+          <div class="responseTable" id="resp${i}" onclick=${handleDivClick()}>
             <p>${checkCategory(res, i)} <span class="important">${res.connections[i].sections[0].journey.category}${res.connections[i].sections[0].journey.number}</span> nach ${res.connections[i].sections[0].journey.to}</p>
             <p>Abfahrt am <span class="important">${dateTime[0]}</span> um <span class="important">${time[0]}</span>${checkDelay(res, i)}${checkGleisKante(res, i)}</p>
         </div>`)
@@ -144,7 +142,13 @@ function App() {
   }
 
   const handleDivClick = () => {
-    console.log('div clicked');
+    setDetails(!details)
+    return (
+      <div className="details">
+        {respContent}
+        <p>Test</p>
+      </div>
+    )
   }
 
   const handleClick = (button) => {
