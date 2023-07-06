@@ -217,7 +217,7 @@ function App() {
             <label for="date">Datum</label>
             <input type='text' name='date' className="datetimefield" id='date' placeholder='yyyy-mm-dd' defaultValue={new Date().toISOString().slice(0, 10)}></input>
             <label for="time">Zeit</label>
-            <input type='text' name='time' className="datetimefield" id='time' placeholder='hh:mm' defaultValue={new Date().toLocaleString().slice(11, 16)}></input>
+            <input type='text' name='time' className="datetimefield" id='time' placeholder='hh:mm' defaultValue={new Date().toLocaleString().slice(10, 15)}></input>
             <button className='submitButton' type='submit' id='btn'>Suchen</button>
           </form>
         </div>
