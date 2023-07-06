@@ -16,11 +16,11 @@ function App() {
   function returnCategory(category) {
     switch (category) {
       case "T":
-        return `<img src="/icons/tram_r.png" alt="Tram" />`
+        return `<img src="/icons/Tram_r.png" alt="Tram" />`
       case "B":
         return `<img src='/icons/Bus_r.png' alt="Bus" />`
       case "S":
-        return `<img src="/icons/zug_r.png" alt="S-Bahn" />`
+        return `<img src="/icons/Zug_r.png" alt="S-Bahn" />`
       case "BAT":
         return `<img src="/icons/Schiff_r.png" alt="Boot" />`
       case "FUN":
