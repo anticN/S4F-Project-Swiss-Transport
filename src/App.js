@@ -45,12 +45,12 @@ function App() {
       }
   }
 
-  function checkCategory(res, index) {
+  function checkCategory(res, index, jIndex=0) {
     // überprüft die Kategorie des Verkehrsmittels und gibt das passende Icon zurück
     if (res.stationboard){
       return returnCategory(res.stationboard[index].category)
     }else if (res.connections) {
-      return returnCategory(res.connections[index].sections[0].journey.category)
+      return returnCategory(res.connections[index].sections[jIndex].journey.category)
     }
   }
 
@@ -90,6 +90,14 @@ function App() {
     }
   }
 
+  function checkDuration(duration) {
+    if(duration[0]==="00"){
+      return `${duration[1]}min`
+    }else{
+      return `${duration[0]}h ${duration[1]}min`
+    }
+  }
+
   function handleStation(res, formData) {
     // überprüft ob eine Station gefunden wurde
     if (res.station.name === null) {
@@ -124,12 +132,17 @@ function App() {
       console.log(res);
       let connections = []
       for(let i = 0; i < res.connections.length; i++) {
+        for(let j = 0; j < res.connections[i].sections.length; j++){
+          //hier kommt noch ein for loop für die sections hin
         let dateTime = res.connections[i].from.departure.split('T')
         let time = dateTime[1].split('+')
+        let duration = res.connections[i].duration.split('d')
+        let split_dur = duration[1].split(':')
         connections.push(`
           <div class="responseTable" id="resp${i}" onclick=${handleDivClick()}>
-            <p>${checkCategory(res, i)} <span class="important">${res.connections[i].sections[0].journey.category}${res.connections[i].sections[0].journey.number}</span> nach ${res.connections[i].sections[0].journey.to}</p>
+            <p>${checkCategory(res, i, j)} <span class="important">${res.connections[i].sections[j].journey.category}${res.connections[i].sections[j].journey.number}</span> nach ${res.connections[i].sections[j].journey.to}</p>
             <p>Abfahrt am <span class="important">${dateTime[0]}</span> um <span class="important">${time[0]}</span>${checkDelay(res, i)}${checkGleisKante(res, i)}</p>
+            <p>Dauer: <span class="important">${checkDuration(split_dur)}</span></p>
         </div>`)
       }
       setRespContent(`
@@ -138,6 +151,8 @@ function App() {
         ${connections.join('')}
       </div>
       `)
+      }
+        
     }
   }
 
@@ -217,7 +232,7 @@ function App() {
             <label for="date">Datum</label>
             <input type='text' name='date' className="datetimefield" id='date' placeholder='yyyy-mm-dd' defaultValue={new Date().toISOString().slice(0, 10)}></input>
             <label for="time">Zeit</label>
-            <input type='text' name='time' className="datetimefield" id='time' placeholder='hh:mm' defaultValue={new Date().toLocaleString().slice(10, 15)}></input>
+            <input type='text' name='time' className="datetimefield" id='time' placeholder='hh:mm' defaultValue={new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}></input>
             <button className='submitButton' type='submit' id='btn'>Suchen</button>
           </form>
         </div>
