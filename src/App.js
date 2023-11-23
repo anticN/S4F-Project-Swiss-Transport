@@ -124,7 +124,7 @@ function App() {
     }
   }
 
-  
+  // Verbindungen anzeigen
   function handleConnection(res, formData) {
     if (res.from.name === null || res.to.name === null) {
       setRespContent(`<h2 class="nextDepart">Keine Verbindungen gefunden</h2>`)
