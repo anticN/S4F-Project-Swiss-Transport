@@ -138,11 +138,11 @@ function App() {
         let time = dateTime[1].split('+')
         let duration = res.connections[i].duration.split('d')
         let split_dur = duration[1].split(':')
+        // <p>Dauer: <span class="important">${checkDuration(split_dur)}</span></p>
         connections.push(`
           <div class="responseTable" id="resp${i}" onclick=${handleDivClick()}>
             <p>${checkCategory(res, i, j)} <span class="important">${res.connections[i].sections[j].journey.category}${res.connections[i].sections[j].journey.number}</span> nach ${res.connections[i].sections[j].journey.to}</p>
             <p>Abfahrt am <span class="important">${dateTime[0]}</span> um <span class="important">${time[0]}</span>${checkDelay(res, i)}${checkGleisKante(res, i)}</p>
-            <p>Dauer: <span class="important">${checkDuration(split_dur)}</span></p>
         </div>`)
       }
       setRespContent(`
